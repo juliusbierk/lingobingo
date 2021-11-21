@@ -1,17 +1,19 @@
-from flask import Flask
+from flask import Flask, request
 from algo import main as main_algo
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    babette = ["Tærsklen","Genskær","Sød", "Bordbøn", "Brylluppet", "Drikkevarerne",
-        "Højtideligt", "Næsen", "Forbløffet", "Sanser", "Skefuld", "Skildpaddesuppe",
-        "Panik", "Tungerne", "Styrke", "Tårerne", "Lyttende", "Vemodig", "Harmonien",
-        "Fuldkommen", "Gaffel", "Panden", "Blinis", "Bordfæller", "Overraskelse", "Behag", "Forunderlige", "Mirakler", "Huskede", "Fisker",
-        "Overfarten", "Håbet", "Fornyede", "Bølgerne", "Frost", "Bred", "Skummede","Limonade",
-        "Sindsstemning", "Jorden", "Sidemand", "Ordrer", "Fornuft", "Gal", "Tung",
-        "Modsatte", "Lettere", "Hjertet", "Spiste", "Drak", "Mennesket", "Afvist", "Æde"]
-    
+with open('main.html', encoding='utf-8') as f:
+    mainhtml = f.read()
 
-    return main_algo(babette)
+
+@app.route('/')
+def main():
+    return mainhtml
+
+
+@app.route('/cards/')
+def cards():
+    r = request.args
+    return main_algo([x.strip() for x in r['words'].split(',')],
+        int(r['nwords']), int(r['rows']), int(r['columns']), int(r['empty']), r['color'])

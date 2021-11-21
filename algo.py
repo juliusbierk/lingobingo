@@ -165,10 +165,10 @@ def make_html(all_cards, winner_info, color='#eee123', fontsize='h3', cards_per_
     html += '<br><br></body></html>'
     return html
 
-def main(words):
-    words, cards, empty = create_cards(words)  
+def main(words, n_cards=20, rows=3, columns=5, empty=2, color='#eee123'):
+    words, cards, empty = create_cards(words, n_cards=n_cards, rows=rpws, columns=columns, empty=empty)  
     winner_info = play(words, cards, empty)
-    html = make_html(cards, winner_info)
+    html = make_html(cards, winner_info, color)
     return html
 
 
