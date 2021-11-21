@@ -12,7 +12,7 @@ def create_card(n_card_words, n_words, earliest_win):
     return np.random.permutation(np.append(first, last))
 
 
-def create_cards(words, n_cards=20, rows=3, columns=5, win_distance_to_end=10):
+def create_cards(words, n_cards=20, rows=3, columns=5, empty=2, win_distance_to_end=10):
     words = [x.upper() for x in words]
     rows = 3
     columns = 5
@@ -46,7 +46,124 @@ def create_cards(words, n_cards=20, rows=3, columns=5, win_distance_to_end=10):
         dead[remove_i] = 1
 
     cards = cards[~dead, :, :]
-    return np.asarray(words)[cards]
+    e = np.ones((len(cards), rows, empty), dtype=np.int64) * len(words)
+    cards = np.concatenate((cards, e), axis=2)
+    cards = np.apply_along_axis(np.random.permutation, 2, cards)
+
+    return words, np.asarray(words + ['         '])[cards], empty
+
+
+def play(words, all_cards, empty):
+    cards, rows, columns = all_cards.shape
+    winner_info = []
+
+    for game in range(1, rows + 1):
+        score = [[0 for _ in range(rows)] for _ in range(cards)]
+        restart = False
+        old_winners = []
+        winners = []
+
+        for w in words:
+            for i in range(cards):
+                for j, r in enumerate(all_cards[i]):
+                    if w in r:
+                        score[i][j] += 1
+
+            n_winners = 0
+            for i in range(cards):
+                if i in old_winners:
+                    continue
+
+                if sum(np.array(score[i]) == (columns - empty)) == game:
+                    n_winners += 1
+                    winners.append(i)
+
+            if n_winners > 0:
+                st = f'Row game {game} has {n_winners} winner(s) {winners} at word "{w}"'
+                winner_info.append(st)
+                print(st)
+                old_winners.extend(winners)
+                winners = []
+        print()
+        winner_info.append(None)
+    return winner_info
+
+def make_html(all_cards, winner_info, color='#eee123', fontsize='h3', cards_per_page=3):
+        # make website
+    html = '''<html>
+    <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" type="text/css"  href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <style>
+
+
+    body {
+      -webkit-print-color-adjust: exact !important;
+      color-adjust: exact;
+    }
+
+    @media print {
+      .visible-print  { display: inherit !important; }
+      .hidden-print   { display: none !important; }
+      -webkit-print-color-adjust: exact; 
+    }
+
+    @media print {
+        tr.vendorListHeading {
+            background-color: #1a4567 !important;
+            -webkit-print-color-adjust: exact; 
+        }
+    }
+
+    @media print {
+        .vendorListHeading th {
+            color: white !important;
+        }
+    }
+    table {
+      border: 1px solid black;
+      table-layout: fixed;
+      width: 200px;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      width: 100px;
+      height: 100px;
+      overflow: hidden;
+    }
+    @media print {
+        .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+    }
+    h1 { font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", serif; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } h3 { font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", serif; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; } p { font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", serif; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; } blockquote { font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", serif; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; } pre { font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", serif; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
+    </style>
+    </head>
+    <body>\n
+    '''
+    for i, c in enumerate(all_cards):
+        if i > 0 and i % cards_per_page == 0:
+            html += '<div class="pagebreak"> </div>\n'
+        html += f'<br><h3>Card {i}</h3><br>\n'
+        html += '<table class="table table-bordered">\n'
+        for r in c:
+            html += '<tr>\n'
+            for v in r:
+                if len(v.replace(' ', '')) > 0:
+                    html += f'<th style="background-color: {color} !important" class="text-center"><{fontsize}>{v}</{fontsize}></th>\n'
+                else:
+                    html += f'<th>{v}</th>\n'
+            html += '</tr>\n'
+        html += '</table>\n<br><br>\n'
+
+    html += '<div class="pagebreak"> </div>\n'
+    for st in winner_info:
+        if st is None:
+            html += f'\n<br>'
+        else:
+            html += f'\n<br>{st}<br>'
+    html += '<br><br></body></html>'
+    return html
 
 
 if __name__ == '__main__':
@@ -58,5 +175,8 @@ if __name__ == '__main__':
         "Sindsstemning", "Jorden", "Sidemand", "Ordrer", "Fornuft", "Gal", "Tung",
         "Modsatte", "Lettere", "Hjertet", "Spiste", "Drak", "Mennesket", "Afvist", "Æde"]
 
-    cards = create_cards(babette)  
-    print(cards)
+    words, cards, empty = create_cards(babette)  
+    winner_info = play(words, cards, empty)
+    html = make_html(cards, winner_info)
+    print()
+    print(html)
