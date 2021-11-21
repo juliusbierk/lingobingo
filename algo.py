@@ -165,6 +165,12 @@ def make_html(all_cards, winner_info, color='#eee123', fontsize='h3', cards_per_
     html += '<br><br></body></html>'
     return html
 
+def main(words):
+    words, cards, empty = create_cards(words)  
+    winner_info = play(words, cards, empty)
+    html = make_html(cards, winner_info)
+    return html
+
 
 if __name__ == '__main__':
     babette = ["Tærsklen","Genskær","Sød", "Bordbøn", "Brylluppet", "Drikkevarerne",
@@ -174,9 +180,5 @@ if __name__ == '__main__':
         "Overfarten", "Håbet", "Fornyede", "Bølgerne", "Frost", "Bred", "Skummede","Limonade",
         "Sindsstemning", "Jorden", "Sidemand", "Ordrer", "Fornuft", "Gal", "Tung",
         "Modsatte", "Lettere", "Hjertet", "Spiste", "Drak", "Mennesket", "Afvist", "Æde"]
-
-    words, cards, empty = create_cards(babette)  
-    winner_info = play(words, cards, empty)
-    html = make_html(cards, winner_info)
-    print()
-    print(html)
+    main(babette)
+    
