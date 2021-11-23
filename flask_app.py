@@ -16,4 +16,4 @@ def main():
 def cards():
     r = request.args
     return main_algo([x.strip() for x in r['words'].split(',')],
-        int(r['nwords']), int(r['rows']), int(r['columns']), int(r['empty']), r['color'])
+        int(r['cards']), int(r['rows']), int(r['columns']), int(r['empty']), r['color'], int(r['win_distance_to_end']))

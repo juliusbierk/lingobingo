@@ -14,9 +14,9 @@ def create_card(n_card_words, n_words, earliest_win):
 
 def create_cards(words, n_cards=20, rows=3, columns=5, empty=2, win_distance_to_end=10):
     words = [x.upper() for x in words]
-    rows = 3
-    columns = 5
     earliest_win = len(words) - win_distance_to_end
+    if earliest_win <= 0:
+        earliest_win = 1
 
     cards = np.array([create_card(rows * columns, len(words), earliest_win).reshape((rows, columns))
         for _ in range(2 * n_cards)])
@@ -165,8 +165,12 @@ def make_html(all_cards, winner_info, color='#eee123', fontsize='h3', cards_per_
     html += '<br><br></body></html>'
     return html
 
-def main(words, n_cards=20, rows=3, columns=5, empty=2, color='#eee123'):
-    words, cards, empty = create_cards(words, n_cards=n_cards, rows=rpws, columns=columns, empty=empty)  
+def main(words, n_cards=20, rows=3, columns=5, empty=2, color='#eee123', win_distance_to_end=10):
+    if rows * columns > 2.0 * len(words):
+        return 'Vi skal bruge flere ord til størrelsen af kort'
+
+    words, cards, empty = create_cards(words, n_cards=n_cards, rows=rows,
+            columns=columns, empty=empty, win_distance_to_end=win_distance_to_end)  
     winner_info = play(words, cards, empty)
     html = make_html(cards, winner_info, color)
     return html
@@ -180,5 +184,7 @@ if __name__ == '__main__':
         "Overfarten", "Håbet", "Fornyede", "Bølgerne", "Frost", "Bred", "Skummede","Limonade",
         "Sindsstemning", "Jorden", "Sidemand", "Ordrer", "Fornuft", "Gal", "Tung",
         "Modsatte", "Lettere", "Hjertet", "Spiste", "Drak", "Mennesket", "Afvist", "Æde"]
+
+    print(", ".join(babette))
     main(babette)
     

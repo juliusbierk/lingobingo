@@ -130,29 +130,40 @@ body {
         <p>Ord, i rækkefølge, komma-sepereret</p>
         <input type="text" id="words" name="words" class="form-control" required autofocus>
       </div>
+
+<blockquote class="blockquote">
+Prøv f.eks.: 
+<small>Tærsklen, Genskær, Sød, Bordbøn, Næsen, Forbløffet, Sanser, Skefuld, Panik, Tungerne, Styrke, Tårerne, Lyttende, Vemodig, Harmonien, Fuldkommen, Gaffel, Panden, Blinis, Behag, Forunderlige, Mirakler, Huskede, Fisker, Overfarten, Håbet, Fornyede, Bølgerne, Frost, Bred, Skummede, Limonade, Jorden, Spiste, Drak, Mennesket, Afvist, Æde</small>
+</blockquote>
     <br>
       <div class="form-label-group">
-        <input type="number" name="cards" id="ncards" class="form-control" 
-        min="3" max="200" placeholder="Antal kort" required>
-        <label for="ncards">Antal kort</label>
+        <input type="number" name="cards" id="cards" class="form-control" 
+        min="3" max="200" placeholder="Antal kort" required value="25">
+        <label for="cards">Antal kort</label>
       </div>
 
       <div class="form-label-group">
         <input type="number" name="rows" id="rows" class="form-control" 
-        min="2" max="6" placeholder="Antal rækker" required>
-        <label for="ncards">Antal rækker</label>
+        min="2" max="6" placeholder="Antal rækker" required value="3">
+        <label for="rows">Antal rækker</label>
       </div>
 
       <div class="form-label-group">
         <input type="number" name="columns" id="columns" class="form-control" 
-        min="2" max="10" placeholder="Antal kolonner" required>
-        <label for="ncards">Antal kolonner</label>
+        min="2" max="10" placeholder="Antal kolonner" required value="5">
+        <label for="columns">Antal kolonner</label>
       </div>
 
       <div class="form-label-group">
-        <input type="number" name="empty" id="columns" class="form-control" 
-        min="0" max="10" placeholder="Antal tomme pr. række" required>
-        <label for="ncards">Antal tomme pr. række</label>
+        <input type="number" name="empty" id="empty" class="form-control" 
+        min="0" max="10" placeholder="Antal tomme pr. række" required value="1">
+        <label for="empty">Antal tomme pr. række</label>
+      </div>
+
+      <div class="form-label-group">
+        <input type="number" name="win_distance_to_end" id="win_distance_to_end" class="form-control" 
+        min="0" max="50" placeholder="" required value="10">
+        <label for="win_distance_to_end">Vinderords afstand til sidste ord</label>
       </div>
 
 
@@ -165,7 +176,12 @@ body {
 
   <br>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Lav LingoBingo!</button>
+
+<br>
+<small>Source: <a href="https://github.com/juliusbierk/lingobingo">https://github.com/juliusbierk/lingobingo</a></small>
+
     </form>
+
 
 <script>
   $(function () {
