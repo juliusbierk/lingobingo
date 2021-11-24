@@ -8,8 +8,8 @@ def create_card(n_card_words, n_words, earliest_win):
     subtract = 1 + max(0, np.random.poisson(n_card_words * (n_words - earliest_win) / n_words) - 1)
     subtract = min(subtract, n_card_words - 2)
     
-    if len(idxs[earliest_win:]) < substract:
-        substract = len(idxs[earliest_win:])
+    if len(idxs[earliest_win:]) < subtract:
+        subtract = len(idxs[earliest_win:])
     
     first = np.random.choice(idxs[:earliest_win], size=n_card_words - subtract, replace=False)
     last = np.random.choice(idxs[earliest_win:], size=subtract, replace=False)
