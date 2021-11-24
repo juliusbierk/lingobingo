@@ -10,6 +10,9 @@ def create_card(n_card_words, n_words, earliest_win):
     
     if len(idxs[earliest_win:]) < subtract:
         subtract = len(idxs[earliest_win:])
+        
+    if len(idxs[:earliest_win]) < (n_card_words - subtract):
+        subtract = n_card_words - len(idxs[:earliest_win])
     
     first = np.random.choice(idxs[:earliest_win], size=n_card_words - subtract, replace=False)
     last = np.random.choice(idxs[earliest_win:], size=subtract, replace=False)
